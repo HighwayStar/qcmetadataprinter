@@ -2,7 +2,9 @@
 #include <dlfcn.h>
 #include <cam_intf.h>
 
-#define CAM_LIB "libmmcamera2_mct.so"
+#define CAM_LIB_MCT "libmmcamera2_mct.so"
+#define CAM_LIB_OEM "liboemcamera.so"
+
 #define PRINT(PARAM_ID, table_ptr)  \
 	blob_pointer = (char*)(get_pointer_of(PARAM_ID, table_ptr))-(char*)(table_ptr); \
 	oss_pointer = (char*)(POINTER_OF_META(PARAM_ID, table_ptr))-(char*)(table_ptr); \
@@ -17,13 +19,28 @@
 typedef void* (*get_pointer_of_t)(cam_intf_parm_type_t, metadata_buffer_t*);
 typedef uint32_t (*get_size_of_t)(cam_intf_parm_type_t);
 
+void* find_library_handle() {
+    void *handle;
+    handle = dlopen(CAM_LIB_MCT, RTLD_LAZY);
+    if (handle) {
+        return handle;
+    }
+
+    handle = dlopen(CAM_LIB_OEM, RTLD_LAZY);
+    if (handle) {
+        return handle;
+    }
+
+    return NULL;
+}
+
 int main() {
     void *handle;
     get_pointer_of_t get_pointer_of;
     get_size_of_t get_size_of;
     metadata_buffer_t *pMetadata=malloc(sizeof(metadata_buffer_t));
 
-    handle = dlopen(CAM_LIB, RTLD_LAZY);
+    handle = find_library_handle();
     if (!handle) {
         fprintf(stderr, "%s\n", dlerror());
         return 1;
