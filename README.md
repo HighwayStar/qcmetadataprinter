@@ -2,7 +2,7 @@ Code that can help to debug metadata_data_t struct used by qualcomm camera code.
 
 It is located in QCamera2/stack/common/cam_intf.h
 
-Main idea is to compare output from functions get_pointer_of() and get_size_of() from binary libmmcamera2_mct.so with values defined in oss header.
+Main idea is to compare output from functions get_pointer_of() and get_size_of() from binary libmmcamera2_mct.so, (liboemcamera.so for older devices) with values defined in oss header.
 
 To get started, you hav to make list of fields of metadata_data_t using special macro PRINT(), like 
 
@@ -29,4 +29,4 @@ Current code contains keys used on kuntao device.
 
 * BLOB means values found in libmmcamera2_mct.so
 * OSS means values from your current cam_intf.h
-* FIXME means fields that different by offset or by size. Some BLOB values will be size=0 and big pointer, it means this field not used in blob.
+* FIXME means fields that different by offset or by size. Some BLOB values will be size=0 and big pointer, it means this field not used in blob (but thats *not* mean you have to remove it from oss HAL).
